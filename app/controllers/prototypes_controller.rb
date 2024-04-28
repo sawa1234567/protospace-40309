@@ -29,9 +29,11 @@ class PrototypesController < ApplicationController
   end
 
   def update
-    prototype = Prototype.find(params[:id])
-    prototype.update(prototype_params)
-    redirect_to root_path
+    if @prototype.update(prototype_params)
+      redirect_to prototype_path(@prototype)
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -51,7 +53,7 @@ class PrototypesController < ApplicationController
   end
 
   def move_to_index
-    unless user_signed_in?
+    unless  @prototype.user_id == current_user.id
       redirect_to action: :index
     end
   end
